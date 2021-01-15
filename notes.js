@@ -1,9 +1,52 @@
-// Challenge 
+const fs = require("fs")
 
-// define an file called notes.js
-// create a getNotes functions that return "Your notes..."
-// export the function
-// from app.js load in and call the function printing message to the console
+const loadNotes = () => {
+
+	try {
+
+		const dataBuffer =  fs.readFileSync("notes.json")
+		const dataJSON = dataBuffer.toString();
+		return JSON.parse(dataJSON)
+	
+	} catch (e) {
+
+		return []
+	}
+
+}
+
+const saveNotes = (notes) => {
+	const dataJSON = JSON.stringify(notes);
+	fs.writeFileSync("notes.json", dataJSON);
+
+}
+
+
+const addNote = (title, body) => {
+
+	let notes = loadNotes()
+
+	const duplicateNotes = notes.filter(note => {
+		return title === note.title
+	})
+
+	if (duplicateNotes.length === 0) {
+
+		notes.push({
+			title: title,
+			body: body
+		})
+
+		console.log("new note added")
+	
+	} else {
+
+		console.log(`Note title:[${title}] taken`)
+	}
+
+	saveNotes(notes);
+
+}
 
 const getNotes = function() {
 
@@ -11,6 +54,10 @@ const getNotes = function() {
 
 }
 
-module.exports = getNotes;
+module.exports = {
+
+	getNotes: getNotes,
+	addNote: addNote
+};
 
 
